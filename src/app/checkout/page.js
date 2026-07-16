@@ -4,12 +4,13 @@ import { useState } from 'react';
 import { useCart } from '@/context/CartContext';
 import Link from 'next/link';
 import Image from 'next/image';
+import { processOrder } from '@/lib/orderActions'; // <-- IMPORTANTE: Importamos la lógica de stock
 
 export default function CheckoutPage() {
   const { cart, getTotalItems, clearCart, activeUser } = useCart();
   
   const [numeroOrden, setNumeroOrden] = useState(null); 
-  const [paymentMethod, setPaymentMethod] = useState('Efectivo'); // Estado nuevo
+  const [paymentMethod, setPaymentMethod] = useState('Efectivo');
   const [formData, setFormData] = useState({
     nombre: '',
     email: '',
@@ -40,8 +41,8 @@ export default function CheckoutPage() {
       userData: formData,
       items: cart, 
       total: totalAmount,
-      paymentMethod: paymentMethod, // Enviamos el método seleccionado
-      paymentStatus: paymentMethod === 'Tarjeta' ? 'Pagado' : 'Pendiente' // Simulación
+      paymentMethod: paymentMethod,
+      paymentStatus: paymentMethod === 'Tarjeta' ? 'Pagado' : 'Pendiente'
     };
 
     try {
@@ -54,6 +55,9 @@ export default function CheckoutPage() {
       const data = await response.json();
 
       if (data.success) {
+        // --- AQUÍ ESTÁ LA MAGIA: RESTAMOS STOCK ---
+        await processOrder(cart); 
+        
         setNumeroOrden(data.order.orderNumber);
         clearCart();
         setOrdenConfirmada(true);
@@ -124,7 +128,6 @@ export default function CheckoutPage() {
             </div>
           </div>
 
-          {/* Selector de método de pago */}
           <div>
             <h2 className="text-xl font-bold text-gray-800 mb-4 border-b pb-2 mt-6">Método de Pago</h2>
             <div className="flex gap-4">

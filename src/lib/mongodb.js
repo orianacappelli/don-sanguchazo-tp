@@ -12,6 +12,7 @@ if (!cached) {
   cached = global.mongoose = { conn: null, promise: null };
 }
 
+// ASEGURATE QUE ESTÉ LA PALABRA "export" AQUÍ
 export async function connectDB() {
   if (cached.conn) {
     return cached.conn;
