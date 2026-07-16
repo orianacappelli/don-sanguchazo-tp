@@ -1,37 +1,42 @@
-//Es fundamental porque es el que guarda la "foto" (snapshot) exacta de lo que el cliente compró, conservando el precio unitario, 
-// las cantidades, las customizaciones que eligió al momento del pago y manejando los cuatro estados obligatorios de la orden.
 import mongoose from 'mongoose';
 
 const OrderItemSchema = new mongoose.Schema({
-  productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
+  productId: { type: String, required: true },
   name: { type: String, required: true },
   image: { type: String, required: true },
   price: { type: Number, required: true },
   quantity: { type: Number, required: true },
-  selectedCustomizations: [{ 
-    name: String, 
-    option: String 
-  }],
+  choices: { type: Object },
   subtotal: { type: Number, required: true }
-});
+}, { _id: false }); 
 
 const OrderSchema = new mongoose.Schema({
-  orderNumber: { type: Number, required: true, unique: true },
-  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  orderNumber: { type: Number, unique: true },
+  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: false },
+  status: { type: String, default: 'Active' },
+  userData: {
+    nombre: String,
+    email: String,
+    telefono: String,
+    direccion: String,
+    observaciones: String
+  },
   items: [OrderItemSchema],
   total: { type: Number, required: true },
-  status: { 
-    type: String, 
-    enum: ['Active', 'Closed', 'Shipped', 'Canceled'], 
-    default: 'Active' 
-  },
-  contactData: {
-    fullName: String,
-    email: String,
-    phone: String,
-    address: String,
-    observations: String
-  }
+  // Campos nuevos para la simulación de pago
+  paymentMethod: { type: String, required: true }, 
+  paymentStatus: { type: String, default: 'Pendiente' }
 }, { timestamps: true });
 
-export default mongoose.models.Order || mongoose.model('Order', OrderSchema);
+// Función moderna asíncrona pura para generar el número
+OrderSchema.pre('validate', async function () {
+  if (this.isNew && !this.orderNumber) {
+    const lastOrder = await mongoose.models.Order.findOne().sort({ orderNumber: -1 });
+    this.orderNumber = lastOrder && lastOrder.orderNumber ? lastOrder.orderNumber + 1 : 1000;
+  }
+});
+
+// Este truquito borra el caché a la fuerza antes de crear el modelo
+delete mongoose.models.Order; 
+
+export default mongoose.model('Order', OrderSchema);

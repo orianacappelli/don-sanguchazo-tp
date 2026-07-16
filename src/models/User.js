@@ -9,7 +9,11 @@ const UserSchema = new mongoose.Schema({
   favorites: [{ 
     type: mongoose.Schema.Types.ObjectId, 
     ref: 'Product' 
-  }]
+  }],
+  role: { 
+    type: String, 
+    default: 'user' // Por defecto, todos son usuarios normales
+  }
 }, { timestamps: true });
 
 export default mongoose.models.User || mongoose.model('User', UserSchema);

@@ -8,6 +8,17 @@ import "@/models/Category";
 import Product from "@/models/Product";
 
 function getProductPayload(formData) {
+  // Leemos las customizaciones del formulario y las convertimos a código
+  let customizations = [];
+  const customRaw = formData.get("customizations");
+  if (customRaw) {
+    try {
+      customizations = JSON.parse(customRaw);
+    } catch (e) {
+      console.error("Error al leer las customizaciones");
+    }
+  }
+
   return {
     name: formData.get("name"),
     description: formData.get("description"),
@@ -17,6 +28,7 @@ function getProductPayload(formData) {
     categories: formData
       .getAll("categories")
       .filter((categoryId) => mongoose.Types.ObjectId.isValid(categoryId)),
+    customizations: customizations, // <-- ACÁ GUARDAMOS LOS INGREDIENTES 
   };
 }
 

@@ -14,8 +14,8 @@ const ProductSchema = new mongoose.Schema({
   }],
   customizations: [{
     name: { type: String, required: true }, // Ej: "Pan", "Proteína", "Queso"
-    options: [{ type: String, required: true }] // Ej: ["Francés", "Brioche", "Pastrón"]
+    options: [{ type: String, required: true }], // Ej: ["Francés", "Brioche", "Pastrón"]
+    defaultOptions: [{ type: String }]
   }]
 }, { timestamps: true });
-
 export default mongoose.models.Product || mongoose.model('Product', ProductSchema);

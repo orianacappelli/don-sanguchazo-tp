@@ -13,6 +13,17 @@ const categorySchema = new mongoose.Schema(
       default: "",
       trim: true,
     },
+    // Agregamos el campo para el emoji (que ya venías usando)
+    icon: {
+      type: String,
+      default: "🥪",
+    },
+    // Agregamos el campo para la imagen
+    image: {
+      type: String,
+      default: "",
+      trim: true,
+    },
   },
   {
     timestamps: true,

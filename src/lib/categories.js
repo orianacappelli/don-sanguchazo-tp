@@ -8,6 +8,8 @@ export function serializeCategory(category) {
     _id: category._id.toString(),
     name: category.name,
     description: category.description,
+    icon: category.icon,
+    image: category.image,
     createdAt: category.createdAt?.toISOString(),
     updatedAt: category.updatedAt?.toISOString(),
   };

@@ -18,31 +18,28 @@ export default async function CategoryProductsPage({ params }) {
   const products = await getProductsByCategory(category._id);
 
   return (
-    <main className="min-h-screen bg-slate-50 px-6 py-10 text-slate-900">
-      <div className="mx-auto max-w-6xl">
-        <Link
-          className="text-sm font-medium text-emerald-700 hover:text-emerald-900"
-          href="/"
-        >
-          Volver al catalogo
-        </Link>
+    <div className="max-w-4xl mx-auto px-4 py-10 w-full">
+      {/* Botón para volver atrás */}
+      <Link href="/" className="text-[#157a2c] font-bold hover:text-green-700 transition-colors mb-8 inline-flex items-center gap-2">
+        <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+          <path d="M19 12H5M12 19l-7-7 7-7" />
+        </svg>
+        Volver al inicio
+      </Link>
 
-        <section className="mb-8 mt-6">
-          <p className="text-sm uppercase tracking-[0.3em] text-emerald-500">
-            Categoria
-          </p>
-          <h1 className="mt-4 max-w-3xl text-4xl font-semibold">
-            {category.name}
-          </h1>
+      {/* Título de la categoría */}
+      <div className="flex items-center gap-4 mb-10 border-b border-green-200 pb-4">
+        
+        <div>
+          <h1 className="text-4xl font-black text-[#157a2c] tracking-tighter uppercase">{category.name}</h1>
           {category.description ? (
-            <p className="mt-4 max-w-2xl text-base text-slate-600">
-              {category.description}
-            </p>
+            <p className="text-gray-600 font-medium mt-1">{category.description}</p>
           ) : null}
-        </section>
-
-        <ProductGrid products={products} />
+        </div>
       </div>
-    </main>
+
+      {/* Grilla de Sándwiches (delegada a tu componente) */}
+      <ProductGrid products={products} />
+    </div>
   );
 }

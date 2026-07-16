@@ -11,11 +11,17 @@ function serializeProduct(product) {
     price: product.price,
     stock: product.stock,
     image: product.image,
+    // 👇 ACÁ DEJAMOS PASAR LAS OPCIONES DEL SÁNDWICH 👇
+    customizations: product.customizations ? product.customizations.map(custom => ({
+      name: custom.name,
+      options: custom.options || [],
+      defaultOptions: custom.defaultOptions || []
+    })) : [],
+    // ------------------------------------------------
     categories: (product.categories || []).map((category) => {
       if (category?.name) {
         return serializeCategory(category);
       }
-
       return category.toString();
     }),
     createdAt: product.createdAt?.toISOString(),
